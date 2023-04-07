@@ -6,7 +6,7 @@ export function SideBar({ podcast, link }) {
     <div className="bg-white rounded-sm shadow-md p-4 border">
       <div className="flex flex-col space-y-4 ">
         <Link href={link}>
-          <figure className="relative w-48 rounded-md overflow-hidden self-center">
+          <figure className="relative w-48 rounded-md overflow-hidden mx-auto">
             <ImageAsset
               src={podcast.image}
               alt={podcast.title + " cover"}

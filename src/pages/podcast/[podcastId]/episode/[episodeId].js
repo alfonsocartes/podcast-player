@@ -30,7 +30,7 @@ export async function getServerSideProps({ params, res }) {
   const data = await response.json();
 
   const feed = await getFeed(data.results[0].feedUrl);
-  const podcast = getPodcastInfo(feed);
+  const podcast = getPodcastInfo(data, feed);
   const episode = getEpisode(feed, params.episodeId);
 
   res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);

@@ -7,12 +7,12 @@ export async function getFeed(url) {
   return result;
 }
 
-export function getPodcastInfo(feed) {
+export function getPodcastInfo(podcastInfo, feed) {
   const podcast = {
     title: feed.rss.channel[0].title[0],
     author: feed.rss.channel[0]["itunes:author"][0],
     description: feed.rss.channel[0].description[0],
-    image: feed.rss.channel[0].image[0].url[0],
+    image: podcastInfo.results[0].artworkUrl600,
   };
   return podcast;
 }
