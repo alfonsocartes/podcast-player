@@ -1,42 +1,19 @@
 import { ImageAsset } from "@/components/ImageAsset";
+import { SideBar } from "@/components/SideBar";
 import { getEpisode, getFeed, getPodcastInfo } from "@/utils/xml";
 
-export default function Episode({ podcast, episode }) {
+export default function Episode({ podcastId, podcast, episode }) {
   if (!episode) return <h2>Episode not found</h2>;
   return (
     <main className="flex gap-x-12 p-12 items-start">
       <aside className="w-1/3">
-        <div className="bg-white rounded-sm shadow-md p-4 border">
-          <div className="flex flex-col space-y-4 ">
-            <figure className="relative w-48 rounded-md overflow-hidden self-center">
-              <ImageAsset
-                src={podcast.image}
-                alt="Podcast cover"
-                width={600}
-                height={600}
-              />
-            </figure>
-            <hr className="border-1 border-slate-300" />
-            <div>
-              <p className="font-bold">{podcast.title}</p>
-              <p className="prose italic">by {podcast.author}</p>
-            </div>
-            <hr className="border-1 border-slate-300" />
-            <div>
-              <p className="font-bold">Description:</p>
-              <div
-                className="italic"
-                dangerouslySetInnerHTML={{ __html: podcast.description }}
-              />
-            </div>
-          </div>
-        </div>
+        <SideBar podcast={podcast} link={`/podcast/${podcastId}`} />
       </aside>
       <section className="w-2/3">
         <div className="rounded-sm shadow-md p-6 border space-y-4">
           <h2 className="font-bold text-2xl">{episode.title}</h2>
           <div
-            className="prose italic text-sm"
+            className="prose italic text-sm prose-a:text-sky-600"
             dangerouslySetInnerHTML={{ __html: episode.description }}
           />
           <audio className="w-full" controls src={episode.audioUrl}></audio>
@@ -60,6 +37,7 @@ export async function getServerSideProps({ params, res }) {
 
   return {
     props: {
+      podcastId: params.podcastId,
       podcast,
       episode,
     },

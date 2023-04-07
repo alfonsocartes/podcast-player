@@ -1,38 +1,16 @@
 import { ImageAsset } from "@/components/ImageAsset";
+import { SideBar } from "@/components/SideBar";
 import { getEpisodes, getFeed, getPodcastInfo } from "@/utils/xml";
 import Link from "next/link";
 
-export default function Podcast({ id, podcast, episodes }) {
+export default function Podcast({ podcastId, podcast, episodes }) {
   if (!podcast) return <h2>Podcast not found</h2>;
   return (
     <main className="flex gap-x-12 p-12 items-start">
       <aside className="w-1/3">
-        <div className="bg-white rounded-sm shadow-md p-4 border">
-          <div className="flex flex-col space-y-4 ">
-            <figure className="relative w-48 rounded-md overflow-hidden self-center">
-              <ImageAsset
-                src={podcast.image}
-                alt={podcast.title + " cover"}
-                width={600}
-                height={600}
-              />
-            </figure>
-            <hr className="border-1 border-slate-300" />
-            <div>
-              <p className="font-bold">{podcast.title}</p>
-              <p className="italic">by {podcast.author}</p>
-            </div>
-            <hr className="border-1 border-slate-300" />
-            <div>
-              <p className="font-bold">Description:</p>
-              <div
-                className="prose italic"
-                dangerouslySetInnerHTML={{ __html: podcast.description }}
-              />
-            </div>
-          </div>
-        </div>
+        <SideBar podcast={podcast} link={`/podcast/${podcastId}`} />
       </aside>
+
       <section className="w-2/3">
         <div className="rounded-sm shadow-md p-2 border">
           <h2 className="font-extrabold text-2xl">
@@ -68,7 +46,9 @@ export default function Podcast({ id, podcast, episodes }) {
                         className={index % 2 === 0 ? "bg-slate-50" : undefined}
                       >
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-sky-700">
-                          <Link href={`/podcast/${id}/episode/${episode.id}`}>
+                          <Link
+                            href={`/podcast/${podcastId}/episode/${episode.id}`}
+                          >
                             {episode.title}
                           </Link>
                         </td>
@@ -105,7 +85,7 @@ export async function getServerSideProps({ params, res }) {
 
   return {
     props: {
-      id: params.podcastId,
+      podcastId: params.podcastId,
       podcast,
       episodes,
     },
