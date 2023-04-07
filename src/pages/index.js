@@ -3,8 +3,24 @@ import { useState } from "react";
 
 export default function Home({ entries }) {
   const [podcasts, setPodcasts] = useState(entries);
+
+  function filterPodcasts(e) {
+    if (e.target.value === "") return setPodcasts(entries);
+    const filteredPodcasts = entries.filter((entry) =>
+      entry.title.label
+        .toLowerCase()
+        .includes(
+          e.target.value.toLowerCase() ||
+            entry["im:artist"].label
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase())
+        )
+    );
+    setPodcasts(filteredPodcasts);
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-6">
+    <main className="flex flex-col items-center justify-between p-6">
       <div className="flex space-x-2 items-center place-self-end">
         <span className="bg-sky-600 px-1 text-white font-bold rounded-lg">
           100
@@ -13,6 +29,9 @@ export default function Home({ entries }) {
           type="text"
           name="filter"
           id="filter"
+          onChange={(e) => {
+            filterPodcasts(e);
+          }}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
           placeholder="Filter podcasts..."
         />
