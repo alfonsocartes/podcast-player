@@ -7,6 +7,6 @@ export function ImageAsset({ src, width, height, alt, className, ...props }) {
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} width={width} height={height} />
   ) : (
-    <Image src={src} alt={alt} width={width} height={height} />
+    <Image src={src} alt={alt} />
   );
 }
