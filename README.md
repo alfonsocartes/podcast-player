@@ -1,8 +1,15 @@
 # Frontend Engineer Practical Test Case
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+[GitHub Repository](https://github.com/alfonsocartes/podcast-player)
+
+## Author
+**Alfonso Cartes**
+
+
 
 ## Getting Started
+
 
 First, run the development server:
 
@@ -34,12 +41,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Frontend Engineer Practical Test Case Requirements
 
-### Asset Optimization
+### General
 
-For the following requirement: 
-**"The application must have a development mode where the assets are served without minimizing (they can be concatenated if desired) and another production mode where the assets must be served concatenated and minimized."**
-
-The application is configured to serve the assets concatenated and minimized in production mode and without minimizing in development mode.
+- The application must be developed using React.
+- I picked Next.js. With Next.js we get a Single Page Application so that navigation will always be done in the client with the ```<Link/>``` component, without completely refreshing the main document at any time.
 
 
 ### Caching
@@ -52,6 +57,13 @@ I opted to use Next.js gerServerSideProps and a Cache-Control header to cache th
 
 For better optimization I could have used Next.js Incremental Static Regeneration to cache the data and pre-render the HTML on both the server and the client, and only update it when the data changes and a request is made to revalidate the data.
 
+### Asset Optimization
+
+For the following requirement: 
+**"The application must have a development mode where the assets are served without minimizing (they can be concatenated if desired) and another production mode where the assets must be served concatenated and minimized."**
+
+The application is configured to serve the assets concatenated and minimized in production mode and without minimizing in development mode.
+
 ## Deployment on Vercel
 
-The prokect is deployed on Vercel. You can access it [here]().
+The project is deployed on Vercel. You can access it [here](https://podcast-player-hazel.vercel.app/).
