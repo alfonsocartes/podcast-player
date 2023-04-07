@@ -1,6 +1,6 @@
 import { ImageAsset } from "@/components/ImageAsset";
 import { SideBar } from "@/components/SideBar";
-import { getEpisode, getFeed, getPodcastInfo } from "@/utils/xml";
+import { getEpisode, getEpisodes, getFeed, getPodcastInfo } from "@/utils/xml";
 
 export default function Episode({ podcastId, podcast, episode }) {
   if (!episode) return <h2>Episode not found</h2>;
@@ -24,22 +24,37 @@ export default function Episode({ podcastId, podcast, episode }) {
 }
 
 export async function getServerSideProps({ params, res }) {
-  const response = await fetch(
-    `https://itunes.apple.com/lookup?id=${params.podcastId}`
-  );
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `https://itunes.apple.com/lookup?id=${params.podcastId}`
+    );
+    const data = await response.json();
 
-  const feed = await getFeed(data.results[0].feedUrl);
-  const podcast = getPodcastInfo(data, feed);
-  const episode = getEpisode(feed, params.episodeId);
+    if (data?.results?.length === 0) {
+      throw new Error("Podcast not found");
+    }
 
-  res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
+    const feed = await getFeed(data.results[0].feedUrl);
+    const podcast = getPodcastInfo(data, feed);
+    const episode = getEpisodes(feed)[params.episodeId];
 
-  return {
-    props: {
-      podcastId: params.podcastId,
-      podcast,
-      episode,
-    },
-  };
+    res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
+
+    return {
+      props: {
+        podcastId: params.podcastId,
+        podcast,
+        episode,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        podcastId: params.podcastId,
+        podcast: null,
+        episode: null,
+      },
+    };
+  }
 }

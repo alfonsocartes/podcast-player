@@ -68,14 +68,19 @@ export default function Home({ entries }) {
 }
 
 export async function getServerSideProps({ res }) {
-  const response = await fetch(
-    "https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json"
-  );
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json`
+    );
+    const data = await response.json();
 
-  res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
+    res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
 
-  return {
-    props: { entries: data.feed.entry },
-  };
+    return {
+      props: { entries: data.feed.entry },
+    };
+  } catch (error) {
+    console.error(error);
+    return { props: { entries: [] } };
+  }
 }

@@ -4,7 +4,7 @@ import { getEpisodes, getFeed, getPodcastInfo } from "@/utils/xml";
 import Link from "next/link";
 
 export default function Podcast({ podcastId, podcast, episodes }) {
-  if (!podcast) return <h2>Podcast not found</h2>;
+  if (!podcast || !episodes) return <h2>Podcast not found</h2>;
   return (
     <main className="flex gap-x-12 p-12 items-start">
       <aside className="w-1/3">
@@ -46,9 +46,7 @@ export default function Podcast({ podcastId, podcast, episodes }) {
                         className={index % 2 === 0 ? "bg-slate-50" : undefined}
                       >
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-sky-700">
-                          <Link
-                            href={`/podcast/${podcastId}/episode/${episode.id}`}
-                          >
+                          <Link href={`/podcast/${podcastId}/episode/${index}`}>
                             {episode.title}
                           </Link>
                         </td>
@@ -72,22 +70,33 @@ export default function Podcast({ podcastId, podcast, episodes }) {
 }
 
 export async function getServerSideProps({ params, res }) {
-  const response = await fetch(
-    `https://itunes.apple.com/lookup?id=${params.podcastId}`
-  );
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `https://itunes.apple.com/lookup?id=${params.podcastId}`
+    );
+    const data = await response.json();
 
-  const feed = await getFeed(data.results[0].feedUrl);
-  const podcast = getPodcastInfo(data, feed);
-  const episodes = getEpisodes(feed);
+    const feed = await getFeed(data.results[0].feedUrl);
+    const podcast = getPodcastInfo(data, feed);
+    const episodes = getEpisodes(feed);
 
-  res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
+    res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
 
-  return {
-    props: {
-      podcastId: params.podcastId,
-      podcast,
-      episodes,
-    },
-  };
+    return {
+      props: {
+        podcastId: params.podcastId,
+        podcast,
+        episodes,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        podcastId: params.podcastId,
+        podcast: null,
+        episodes: null,
+      },
+    };
+  }
 }
