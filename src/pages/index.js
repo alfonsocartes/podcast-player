@@ -1,6 +1,4 @@
 import { ImageAsset } from "@/components/ImageAsset";
-import { Inter } from "next/font/google";
-import Image from "next/image";
 import { useState } from "react";
 
 export default function Home({ entries }) {
@@ -66,14 +64,15 @@ export default function Home({ entries }) {
   );
 }
 
-export async function getStaticProps() {
-  const res = await fetch(
+export async function getServerSideProps({ res }) {
+  const response = await fetch(
     "https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json"
   );
-  const data = await res.json();
+  const data = await response.json();
+
+  res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
+
   return {
     props: { entries: data.feed.entry },
-    // only requested again if more than one day has passed since the last time it was requested
-    revalidate: 60 * 60 * 24,
   };
 }
