@@ -1,4 +1,5 @@
 import { ImageAsset } from "@/components/ImageAsset";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Home({ entries }) {
@@ -38,25 +39,27 @@ export default function Home({ entries }) {
       </div>
       <ul className="mt-4 grid grid-cols-1 gap-x-4 gap-y-4 lg:gap-y-24 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {podcasts.map((entry) => (
-          <li key={entry.id.label} className="pt-24">
-            <div className="bg-white rounded-sm shadow-md p-4 border">
-              <div className="flex flex-col items-center relative ">
-                <figure className="absolute w-24 rounded-full overflow-hidden -translate-y-16">
-                  <ImageAsset
-                    src={entry["im:image"][2].label}
-                    alt="Podcast cover"
-                    width={Number(entry["im:image"][2].attributes.height)}
-                    height={Number(entry["im:image"][2].attributes.height)}
-                  />
-                </figure>
-                <h2 className="font-medium mt-10">
-                  {entry.title.label.toUpperCase()}
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  Author: {entry["im:artist"].label}
-                </p>
+          <li key={entry.id.attributes["im:id"]} className="pt-24">
+            <Link href={`podcast/${entry.id.attributes["im:id"]}`}>
+              <div className="bg-white rounded-sm shadow-md p-4 border">
+                <div className="flex flex-col items-center relative">
+                  <figure className="absolute w-24 rounded-full overflow-hidden -translate-y-16">
+                    <ImageAsset
+                      src={entry["im:image"][2].label}
+                      alt="Podcast cover"
+                      width={Number(entry["im:image"][2].attributes.height)}
+                      height={Number(entry["im:image"][2].attributes.height)}
+                    />
+                  </figure>
+                  <h2 className="font-medium mt-10">
+                    {entry.title.label.toUpperCase()}
+                  </h2>
+                  <p className="text-gray-500 text-sm">
+                    Author: {entry["im:artist"].label}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
           </li>
         ))}
       </ul>
