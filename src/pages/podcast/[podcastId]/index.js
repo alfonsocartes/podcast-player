@@ -1,7 +1,8 @@
 import { ImageAsset } from "@/components/ImageAsset";
-import { getPodcast } from "@/utils/xml";
+import { getEpisodes, getFeed, getPodcastInfo } from "@/utils/xml";
+import Link from "next/link";
 
-export default function Podcast({ podcast }) {
+export default function Podcast({ id, podcast, episodes }) {
   if (!podcast) return <h2>Podcast not found</h2>;
   return (
     <main className="flex gap-x-12 p-12 items-start">
@@ -25,7 +26,7 @@ export default function Podcast({ podcast }) {
             <div>
               <p className="font-bold">Description:</p>
               <div
-                className="italic"
+                className="prose italic"
                 dangerouslySetInnerHTML={{ __html: podcast.description }}
               />
             </div>
@@ -61,13 +62,15 @@ export default function Podcast({ podcast }) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-300">
-                    {podcast.episodes.map((episode, index) => (
+                    {episodes.map((episode, index) => (
                       <tr
                         key={episode.id}
                         className={index % 2 === 0 ? "bg-slate-50" : undefined}
                       >
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-sky-700">
-                          {episode.title}
+                          <Link href={`/podcast/${id}/episode/${episode.id}`}>
+                            {episode.title}
+                          </Link>
                         </td>
                         <td className="px-3 py-4 text-sm">
                           {new Date(episode.pubDate).toLocaleDateString()}
@@ -90,17 +93,21 @@ export default function Podcast({ podcast }) {
 
 export async function getServerSideProps({ params, res }) {
   const response = await fetch(
-    `https://itunes.apple.com/lookup?id=${params.id}`
+    `https://itunes.apple.com/lookup?id=${params.podcastId}`
   );
   const data = await response.json();
 
-  const podcast = await getPodcast(data.results[0].feedUrl);
+  const feed = await getFeed(data.results[0].feedUrl);
+  const podcast = getPodcastInfo(feed);
+  const episodes = getEpisodes(feed);
 
   res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}`);
 
   return {
     props: {
+      id: params.podcastId,
       podcast,
+      episodes,
     },
   };
 }
