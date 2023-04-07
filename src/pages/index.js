@@ -1,4 +1,6 @@
+import { ImageAsset } from "@/components/ImageAsset";
 import { Inter } from "next/font/google";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Home({ entries }) {
@@ -42,8 +44,7 @@ export default function Home({ entries }) {
             <div className="bg-white rounded-sm shadow-md p-4 border">
               <div className="flex flex-col items-center relative ">
                 <figure className="absolute w-24 rounded-full overflow-hidden -translate-y-16">
-                  {/*eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <ImageAsset
                     src={entry["im:image"][2].label}
                     alt="Podcast cover"
                     width={Number(entry["im:image"][2].attributes.height)}
